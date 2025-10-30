@@ -1,5 +1,12 @@
 """Backend package for application services."""
 
+from .services.gamification import (
+    Achievement,
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
+)
 from .services.storage import (
     StorageConfig,
     StorageService,
@@ -9,6 +16,11 @@ from .services.storage import (
 )
 
 __all__ = [
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "get_gamification_service",
     "StorageConfig",
     "StorageService",
     "get_storage_service",

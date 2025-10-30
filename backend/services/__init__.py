@@ -1,5 +1,12 @@
 """Service layer for backend utilities."""
 
+from .gamification import (
+    Achievement,
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
+)
 from .storage import (
     StorageConfig,
     StorageService,
@@ -9,6 +16,11 @@ from .storage import (
 )
 
 __all__ = [
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "get_gamification_service",
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
