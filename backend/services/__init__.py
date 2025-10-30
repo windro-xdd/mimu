@@ -1,5 +1,13 @@
 """Service layer for backend utilities."""
 
+feat-leaderboards-api-score-timer-redis-hydrate
+from .leaderboard import (
+    LeaderboardAPI,
+    LeaderboardEntry,
+    LeaderboardService,
+    UserProfile,
+    create_leaderboard_api,
+
 feature-gamification-service-redis-leaderboard-achievements
 from .gamification import (
     Achievement,
@@ -63,6 +71,7 @@ from .memes import (
     get_memes_service,
     InMemoryMemesRepository,
 main
+main
 )
 from .storage import (
     LocalStorageService,
@@ -73,6 +82,13 @@ from .storage import (
 )
 
 __all__ = [
+ feat-leaderboards-api-score-timer-redis-hydrate
+    "LeaderboardAPI",
+    "LeaderboardEntry",
+    "LeaderboardService",
+    "UserProfile",
+    "create_leaderboard_api",
+
 feature-gamification-service-redis-leaderboard-achievements
     "Achievement",
     "GamificationConfig",
@@ -118,6 +134,7 @@ feature-gamification-service-redis-leaderboard-achievements
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
+main
 main
     "StorageConfig",
     "StorageService",

@@ -1,5 +1,13 @@
 """Backend package exposing public APIs."""
 
+feat-leaderboards-api-score-timer-redis-hydrate
+from .services.leaderboard import (
+    LeaderboardAPI,
+    LeaderboardEntry,
+    LeaderboardService,
+    UserProfile,
+    create_leaderboard_api,
+
 feature-gamification-service-redis-leaderboard-achievements
 from .services.gamification import (
     Achievement,
@@ -7,6 +15,7 @@ from .services.gamification import (
     GamificationEventResult,
     GamificationService,
     get_gamification_service,
+main
 )
 from .services.storage import (
 
@@ -49,6 +58,13 @@ main
 )
 
 __all__ = [
+feat-leaderboards-api-score-timer-redis-hydrate
+    "LeaderboardAPI",
+    "LeaderboardEntry",
+    "LeaderboardService",
+    "UserProfile",
+    "create_leaderboard_api",
+=======
 feature-gamification-service-redis-leaderboard-achievements
     "Achievement",
     "GamificationConfig",
@@ -74,6 +90,7 @@ feature-gamification-service-redis-leaderboard-achievements
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
+main
 main
     "StorageConfig",
     "StorageService",
