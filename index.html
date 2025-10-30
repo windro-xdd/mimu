@@ -3,103 +3,95 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>mimu — Minimal Landing Page</title>
+    <title>MemeStream — Home Feed</title>
     <meta
       name="description"
-      content="mimu is a calm, human-centered landing page designed with simplicity and clarity in mind."
+      content="Scroll an endless feed of approved memes, cast your votes, and discover something new with a single click."
     />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <header class="site-header" id="home">
-      <div class="container">
-        <div class="branding">mimu</div>
-        <nav class="site-nav" aria-label="Primary">
-          <ul>
-            <li><a href="#hero">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
+    <header class="site-header" id="top">
+      <div class="container header-layout">
+        <a class="branding" href="/">MemeStream</a>
+        <div class="header-actions">
+          <a class="button button-tertiary" href="/upload" id="upload-cta">Upload Meme</a>
+          <button class="button button-primary" type="button" id="random-meme-button">
+            Random Meme
+          </button>
+        </div>
       </div>
     </header>
+
     <main id="main-content">
-      <section id="hero" class="hero" aria-labelledby="hero-title">
-        <div class="container">
-          <div class="hero-content">
-            <h1 id="hero-title">Modern simplicity for mindful experiences</h1>
+      <section class="hero hero-feed" aria-labelledby="feed-title">
+        <div class="container hero-feed-content">
+          <div>
+            <h1 id="feed-title">Discover the home feed</h1>
             <p>
-              mimu helps teams craft calm, focused digital spaces that put people first,
-              offering just the right tools to tell meaningful stories.
+              Browse the latest approved memes, vote on your favorites, and keep the laughs rolling.
+              Scroll to keep loading more — the fun never stops.
             </p>
-            <a class="button button-primary" href="#contact">Let's connect</a>
           </div>
         </div>
       </section>
 
-      <section id="about" class="about" aria-labelledby="about-title">
-        <div class="container">
-          <h2 id="about-title">About mimu</h2>
-          <p>
-            We believe that less is more. mimu provides thoughtful guidance, curated design
-            systems, and mindful collaboration practices so your team can focus on what
-            matters most: creating experiences that resonate.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <h3>Guided Strategy</h3>
-              <p>Plan purposeful journeys that keep your audience engaged from the first click.</p>
-            </li>
-            <li>
-              <h3>Intentional Design</h3>
-              <p>Shape interfaces that are intuitive, inclusive, and beautifully minimal.</p>
-            </li>
-            <li>
-              <h3>Collaborative Flow</h3>
-              <p>Unlock seamless teamwork with clear workflows and supportive rhythms.</p>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="contact" class="contact" aria-labelledby="contact-title">
-        <div class="container">
-          <h2 id="contact-title">Contact</h2>
-          <p>We'd love to hear from you. Share a few details and we'll get in touch soon.</p>
-          <form action="#" method="post" aria-describedby="contact-note">
-            <div class="form-field">
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" autocomplete="name" required />
-            </div>
-            <div class="form-field">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" autocomplete="email" required />
-            </div>
-            <div class="form-field">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="button button-secondary" disabled aria-disabled="true">
-              Send message
-            </button>
-            <p id="contact-note" class="form-note">Demo only. Submissions are currently disabled.</p>
-          </form>
+      <section class="feed" aria-live="polite">
+        <div class="container feed-container">
+          <div id="feed-status" class="feed-status" role="status" hidden></div>
+          <div id="memes-grid" class="memes-grid" aria-live="polite"></div>
+          <div id="feed-loader" class="feed-loader" role="status" data-state="visible">
+            Loading memes…
+          </div>
+          <div id="feed-end" class="feed-end" data-state="hidden">
+            You're all caught up. Check back later for more memes!
+          </div>
+          <button type="button" class="button button-secondary" id="load-more-button" hidden>
+            Load more memes
+          </button>
+          <div id="feed-sentinel" class="feed-sentinel" aria-hidden="true"></div>
         </div>
       </section>
     </main>
 
+    <template id="meme-card-template">
+      <article class="meme-card">
+        <div class="meme-image-wrapper">
+          <img data-role="image" alt="" />
+        </div>
+        <div class="meme-content">
+          <p class="meme-caption" data-role="caption"></p>
+          <div class="meme-meta">
+            <div class="meme-score" aria-live="polite">
+              Score: <span data-role="score">0</span>
+            </div>
+            <div class="vote-controls" role="group" aria-label="Voting controls">
+              <button type="button" class="vote-button upvote" data-direction="up">
+                <span aria-hidden="true">⬆️</span>
+                <span class="sr-only">Upvote</span>
+              </button>
+              <button type="button" class="vote-button downvote" data-direction="down">
+                <span aria-hidden="true">⬇️</span>
+                <span class="sr-only">Downvote</span>
+              </button>
+            </div>
+          </div>
+          <p class="meme-error" data-role="error" role="alert" hidden></p>
+        </div>
+      </article>
+    </template>
+
     <footer class="site-footer">
-      <div class="container">
-        <small>&copy; <span id="current-year">2024</span> mimu. All rights reserved.</small>
-        <nav class="footer-nav" aria-label="Footer">
-          <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#home">Back to top</a></li>
-          </ul>
-        </nav>
+      <div class="container footer-layout">
+        <small>&copy; <span id="current-year">2024</span> MemeStream. All rights reserved.</small>
+        <div class="footer-actions">
+          <a href="/upload">Upload</a>
+          <a href="#top">Back to top</a>
+        </div>
       </div>
     </footer>
+
+    <script type="module" src="main.js"></script>
   </body>
 </html>
