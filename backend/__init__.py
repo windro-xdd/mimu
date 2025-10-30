@@ -1,5 +1,15 @@
 """Backend package exposing public APIs."""
 
+feature-gamification-service-redis-leaderboard-achievements
+from .services.gamification import (
+    Achievement,
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
+)
+from .services.storage import (
+
 from __future__ import annotations
 
 from .services import (
@@ -20,6 +30,7 @@ from .services import (
     RandomMemeCache,
     SQLAlchemyMemesRepository,
     S3StorageService,
+main
     StorageConfig,
     StorageService,
     auth_app,
@@ -38,6 +49,12 @@ from .services import (
 )
 
 __all__ = [
+feature-gamification-service-redis-leaderboard-achievements
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "get_gamification_service",
     "ExcuseAPI",
     "ExcuseSeedConfig",
     "ExcuseSeedError",
@@ -57,6 +74,7 @@ __all__ = [
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
+main
     "StorageConfig",
     "StorageService",
     "LocalStorageService",

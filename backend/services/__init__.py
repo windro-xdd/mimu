@@ -1,12 +1,18 @@
 """Service layer for backend utilities."""
 
+feature-gamification-service-redis-leaderboard-achievements
+from .gamification import (
+    Achievement,
+
 from __future__ import annotations
 
 from .gamification import (
+ main
     GamificationConfig,
     GamificationEventResult,
     GamificationService,
     get_gamification_service,
+
 from .auth import (
     app as auth_app,
     get_session_manager,
@@ -56,6 +62,7 @@ from .memes import (
     create_memes_app,
     get_memes_service,
     InMemoryMemesRepository,
+main
 )
 from .storage import (
     LocalStorageService,
@@ -66,6 +73,13 @@ from .storage import (
 )
 
 __all__ = [
+feature-gamification-service-redis-leaderboard-achievements
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "get_gamification_service",
+
     "GamificationConfig",
     "GamificationEventResult",
     "GamificationService",
@@ -104,6 +118,7 @@ __all__ = [
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
+main
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
