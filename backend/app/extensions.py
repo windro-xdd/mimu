@@ -5,21 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 from flask import Flask, Response
-
-# --- SQLAlchemy -------------------------------------------------------------
-try:  # pragma: no cover - exercised when dependency is installed
-    from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy  # type: ignore
-except ModuleNotFoundError:  # pragma: no cover - fallback when not installed
-    class _SQLAlchemy:  # type: ignore[override]
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            self.app: Optional[Flask] = None
-
-        def init_app(self, app: Flask) -> None:
-            self.app = app
-
-        def __repr__(self) -> str:  # pragma: no cover - debugging helper
-            return "<SQLAlchemyStub>"
-
+from backend.extensions import db as _db
 
 # --- Alembic / Migrations ---------------------------------------------------
 try:  # pragma: no cover
@@ -28,9 +14,9 @@ except ModuleNotFoundError:  # pragma: no cover
     class _Migrate:  # type: ignore[override]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             self.app: Optional[Flask] = None
-            self.db: Optional[_SQLAlchemy] = None
+            self.db: Optional[Any] = None
 
-        def init_app(self, app: Flask, db: Optional[_SQLAlchemy] = None) -> None:
+        def init_app(self, app: Flask, db: Optional[Any] = None) -> None:
             self.app = app
             self.db = db
 
@@ -61,7 +47,6 @@ except ModuleNotFoundError:  # pragma: no cover
     redis = None  # type: ignore[assignment]
 
 
-db = _SQLAlchemy()
 migrate = _Migrate()
 cors = _CORS()
 
@@ -160,8 +145,8 @@ def init_redis(app: Flask) -> None:
 
 def register_extensions(app: Flask) -> None:
     """Register all configured Flask extensions with the application."""
-    db.init_app(app)
-    migrate.init_app(app, db)
+    _db.init_app(app)
+    migrate.init_app(app, _db)
     cors.init_app(
         app,
         resources={r"/*": {"origins": app.config.get("FRONTEND_ORIGIN")}},
