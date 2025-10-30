@@ -14,6 +14,13 @@ yarn-error.log*
 *.swp
 *.swo
 
+feat/frontend-scaffold-vite-ts-react-router-axios-auth-guards
+# Node.js
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+=======
 # Node.js and frontend tooling
 node_modules/
 dist/
@@ -42,3 +49,4 @@ backend/uploads/*
 # Miscellaneous
 coverage/
 .tmp/
+main
