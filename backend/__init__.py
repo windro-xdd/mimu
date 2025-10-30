@@ -1,4 +1,4 @@
-"""Backend package for application services."""
+"""Backend package exposing public APIs."""
 
 from __future__ import annotations
 

@@ -1,79 +1,65 @@
+"""Application factory for the backend API."""
+
 from __future__ import annotations
 
-import json
-import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Tuple
+from typing import Optional
+
+from flask import Flask, current_app, g
+from sqlalchemy.orm import Session, sessionmaker
+
+from .db import Base, DatabaseConfig
+from .services.gamification import GamificationService, get_gamification_service
+from .services.storage import get_storage_service
+from .db.config import get_engine
+from .routes.content import content_bp
 
 
-class SimpleRequestHandler(BaseHTTPRequestHandler):
-    """Lightweight HTTP handler used for local development and health checks."""
+def create_app(
+    *,
+    db_config: Optional[DatabaseConfig] = None,
+    session_factory: Optional[sessionmaker] = None,
+    gamification_service: Optional[GamificationService] = None,
+) -> Flask:
+    """Create and configure a Flask application instance."""
 
-    server_version = "BackendPlaceholder/0.1"
+    app = Flask(__name__)
 
-    def _cors_headers(self) -> Tuple[str, str]:
-        allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", "*")
-        allowed_methods = os.getenv(
-            "CORS_ALLOWED_METHODS",
-            "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-        )
-        return allowed_origins, allowed_methods
+    if session_factory is None:
+        resolved_config = db_config or DatabaseConfig.from_env()
+        engine = get_engine(resolved_config)
+        Base.metadata.create_all(engine)
+        session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+    else:
+        resolved_config = db_config
 
-    def _write_json(self, status_code: int, payload: dict[str, object]) -> None:
-        body = json.dumps(payload).encode("utf-8")
-        self.send_response(status_code)
-        self.send_header("Content-Type", "application/json")
-        origin, methods = self._cors_headers()
-        self.send_header("Access-Control-Allow-Origin", origin)
-        self.send_header("Access-Control-Allow-Methods", methods)
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        self.send_header("Access-Control-Allow-Credentials", os.getenv("CORS_ALLOW_CREDENTIALS", "true"))
-        self.end_headers()
-        self.wfile.write(body)
+    app.config["DATABASE_CONFIG"] = resolved_config
+    app.config["SESSION_FACTORY"] = session_factory
+    app.config["GAMIFICATION_SERVICE"] = (
+        gamification_service or get_gamification_service()
+    )
+    # Provide the storage service configuration so future routes can depend on it.
+    app.config.setdefault("STORAGE_SERVICE", get_storage_service())
 
-    def do_OPTIONS(self) -> None:  # noqa: N802 (http method name)
-        origin, methods = self._cors_headers()
-        self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", origin)
-        self.send_header("Access-Control-Allow-Methods", methods)
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        self.send_header("Access-Control-Allow-Credentials", os.getenv("CORS_ALLOW_CREDENTIALS", "true"))
-        self.end_headers()
+    @app.before_request
+    def _open_session() -> None:
+        factory: sessionmaker = current_app.config["SESSION_FACTORY"]
+        session: Session = factory()
+        g.db_session = session
 
-    def do_GET(self) -> None:  # noqa: N802 (http method name)
-        if self.path in {"/", "/health", "/healthz"}:
-            payload = {
-                "status": "ok",
-                "service": "backend",
-                "environment": os.getenv("APP_ENV", "development"),
-            }
-            self._write_json(200, payload)
+    @app.teardown_request
+    def _close_session(exc: Optional[BaseException]) -> None:
+        session: Optional[Session] = g.pop("db_session", None)
+        if session is None:
             return
+        try:
+            if exc is not None:
+                session.rollback()
+        finally:
+            session.close()
 
-        self._write_json(404, {"detail": "Not found"})
+    app.register_blueprint(content_bp, url_prefix="/api")
 
-    def log_message(self, format: str, *args: object) -> None:  # noqa: A003
-        """Silence default logging unless explicitly enabled."""
-
-        if os.getenv("BACKEND_LOG_LEVEL", "info").lower() == "debug":
-            super().log_message(format, *args)
-
-
-def run() -> None:
-    """Entrypoint used by the Docker container for local orchestration."""
-
-    port = int(os.getenv("BACKEND_PORT", os.getenv("PORT", "8000")))
-    address = ("0.0.0.0", port)
-    httpd = HTTPServer(address, SimpleRequestHandler)
-    print(f"Backend development server listening on http://{address[0]}:{port}", flush=True)
-
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("Shutting down backend server", flush=True)
-    finally:
-        httpd.server_close()
+    return app
 
 
-if __name__ == "__main__":
-    run()
+__all__ = ["create_app"]

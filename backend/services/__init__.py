@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from .gamification import (
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
 from .auth import (
     app as auth_app,
     get_session_manager,
@@ -61,6 +66,9 @@ from .storage import (
 )
 
 __all__ = [
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
     "ExcuseAPI",
     "ExcuseSeedConfig",
     "ExcuseSeedError",
@@ -100,6 +108,9 @@ __all__ = [
     "StorageService",
     "LocalStorageService",
     "S3StorageService",
+    "StorageConfig",
+    "StorageService",
+    "get_gamification_service",
     "get_storage_service",
     "auth_app",
     "user_repository",
