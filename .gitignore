@@ -27,10 +27,12 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+backend/app.db
 
 # Environment files
 .env
 .env.*
+!.env.example
 *.local
 
 # Upload storage
