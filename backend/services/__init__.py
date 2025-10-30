@@ -1,17 +1,155 @@
 """Service layer for backend utilities."""
 
+feat-leaderboards-api-score-timer-redis-hydrate
+from .leaderboard import (
+    LeaderboardAPI,
+    LeaderboardEntry,
+    LeaderboardService,
+    UserProfile,
+    create_leaderboard_api,
+
+feature-gamification-service-redis-leaderboard-achievements
+from .gamification import (
+    Achievement,
+
+from __future__ import annotations
+
+from .gamification import (
+ main
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
+
+from .auth import (
+    app as auth_app,
+    get_session_manager,
+    get_user_repository,
+    require_admin_user,
+    require_authenticated_user,
+    reset_auth_state,
+    session_manager,
+    user_repository,
+)
+from .excuse_api import ExcuseAPI, create_excuse_app
+from .excuses import (
+    DEFAULT_FIXTURE_PATH,
+    ExcuseSeedConfig,
+    ExcuseSeedError,
+    ExcuseService,
+    get_excuse_service,
+    load_excuse_fixture,
+)
+from .leaderboard import (
+    GamificationService,
+    RateLimitInfo,
+    RedisRateLimitClient,
+    RedisRateLimiter,
+    RedisSortedSetClient,
+    TimerLeaderboardAPI,
+    TimerLeaderboardService,
+    TimerRateLimitExceeded,
+    TimerSubmissionError,
+    TimerSubmissionPayload,
+    TimerSubmissionResult,
+    TimerSummaryRepository,
+    TimerTokenError,
+    TimerTokenSigner,
+    TimerValidationError,
+)
+from .memes import (
+    MemeCreator,
+    MemeRecord,
+    MemesFilter,
+    MemesQueryParams,
+    MemesService,
+    PaginatedMemes,
+    Pagination,
+    RandomMemeCache,
+    SQLAlchemyMemesRepository,
+    create_memes_app,
+    get_memes_service,
+    InMemoryMemesRepository,
+main
+main
+)
 from .storage import (
-    StorageConfig,
-    StorageService,
     LocalStorageService,
     S3StorageService,
+    StorageConfig,
+    StorageService,
     get_storage_service,
 )
 
 __all__ = [
+ feat-leaderboards-api-score-timer-redis-hydrate
+    "LeaderboardAPI",
+    "LeaderboardEntry",
+    "LeaderboardService",
+    "UserProfile",
+    "create_leaderboard_api",
+
+feature-gamification-service-redis-leaderboard-achievements
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "get_gamification_service",
+
+    "GamificationConfig",
+    "GamificationEventResult",
+    "GamificationService",
+    "ExcuseAPI",
+    "ExcuseSeedConfig",
+    "ExcuseSeedError",
+    "ExcuseService",
+    "DEFAULT_FIXTURE_PATH",
+    "create_excuse_app",
+    "get_excuse_service",
+    "load_excuse_fixture",
+    "GamificationService",
+    "RateLimitInfo",
+    "RedisRateLimitClient",
+    "RedisRateLimiter",
+    "RedisSortedSetClient",
+    "TimerLeaderboardAPI",
+    "TimerLeaderboardService",
+    "TimerRateLimitExceeded",
+    "TimerSubmissionError",
+    "TimerSubmissionPayload",
+    "TimerSubmissionResult",
+    "TimerSummaryRepository",
+    "TimerTokenError",
+    "TimerTokenSigner",
+    "TimerValidationError",
+    "MemesService",
+    "MemesFilter",
+    "MemesQueryParams",
+    "MemeRecord",
+    "MemeCreator",
+    "RandomMemeCache",
+    "PaginatedMemes",
+    "Pagination",
+    "InMemoryMemesRepository",
+    "SQLAlchemyMemesRepository",
+    "create_memes_app",
+    "get_memes_service",
+main
+main
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
     "S3StorageService",
+    "StorageConfig",
+    "StorageService",
+    "get_gamification_service",
     "get_storage_service",
+    "auth_app",
+    "user_repository",
+    "session_manager",
+    "get_user_repository",
+    "get_session_manager",
+    "reset_auth_state",
+    "require_authenticated_user",
+    "require_admin_user",
 ]
