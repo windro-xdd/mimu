@@ -1,3 +1,4 @@
+feat/frontend-scaffold-vite-ts-react-router-axios-auth-guards
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,5 +10,199 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frontend Modules Playground</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">⚡</span>
+          <span class="brand__name">Frontend Modules</span>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a class="site-nav__link" href="#excuse">Excuse Generator</a>
+          <a class="site-nav__link" href="#timer">Countdown Timer</a>
+          <a class="site-nav__link" href="#leaderboards">Leaderboards</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="page">
+      <section id="excuse" class="module" data-module-excuse>
+        <header class="module__header">
+          <h2 class="module__title">Excuse Generator</h2>
+          <p class="module__subtitle">
+            Generate on-demand excuses straight from the backend seed endpoint. Copy the
+            response and keep your alibi ready.
+          </p>
+        </header>
+
+        <div class="card card--excuse">
+          <div class="excuse-output" data-excuse-text>
+            Tap the button below and we&rsquo;ll fetch you a fresh excuse.
+          </div>
+
+          <div class="button-row">
+            <button type="button" class="btn btn--primary" data-excuse-generate>
+              Generate excuse
+            </button>
+            <button type="button" class="btn" data-excuse-copy disabled>
+              Copy to clipboard
+            </button>
+          </div>
+
+          <p class="status" data-excuse-status role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section id="timer" class="module" data-module-timer>
+        <header class="module__header">
+          <h2 class="module__title">Countdown Timer Challenge</h2>
+          <p class="module__subtitle">
+            Race against a five-second countdown. Stop the timer as close to zero as possible,
+            track your best accuracy, and submit your score to the leaderboard.
+          </p>
+        </header>
+
+        <div class="card card--timer">
+          <div class="timer" data-timer>
+            <div class="timer__visual" aria-hidden="true">
+              <div class="timer__progress">
+                <div class="timer__progress-fill" data-timer-progress></div>
+              </div>
+              <span class="timer__display" data-timer-display>05.000s</span>
+            </div>
+
+            <p class="timer__hint">Stop the timer exactly at zero.</p>
+
+            <div class="button-row">
+              <button type="button" class="btn btn--primary" data-timer-action="start">
+                Start
+              </button>
+              <button type="button" class="btn" data-timer-action="stop" disabled>
+                Stop
+              </button>
+              <button type="button" class="btn" data-timer-action="reset" disabled>
+                Reset
+              </button>
+            </div>
+
+            <dl class="timer__stats">
+              <div class="timer__stat">
+                <dt>Best accuracy</dt>
+                <dd data-timer-best>—</dd>
+              </div>
+              <div class="timer__stat">
+                <dt>Last deviation</dt>
+                <dd data-timer-last>—</dd>
+              </div>
+            </dl>
+
+            <form class="timer__form" data-timer-form autocomplete="off" novalidate>
+              <label class="form-field">
+                <span class="form-field__label">Display name</span>
+                <input
+                  type="text"
+                  name="playerName"
+                  inputmode="text"
+                  minlength="2"
+                  maxlength="36"
+                  placeholder="Your name"
+                  required
+                />
+              </label>
+              <button type="submit" class="btn btn--primary" data-timer-submit disabled>
+                Submit to leaderboard
+              </button>
+            </form>
+
+            <p class="status" data-timer-status role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="leaderboards" class="module module--leaderboards">
+        <header class="module__header">
+          <h2 class="module__title">Live Leaderboards</h2>
+          <p class="module__subtitle">
+            Track the latest results flowing from the backend APIs. Both the global score table
+            and the timer challenge update automatically on refresh.
+          </p>
+        </header>
+
+        <div class="leaderboards">
+          <article class="leaderboard" data-leaderboard="score">
+            <header class="leaderboard__header">
+              <h3>Score Leaderboard</h3>
+              <button type="button" class="btn btn--ghost" data-leaderboard-refresh>
+                Refresh
+              </button>
+            </header>
+            <div class="leaderboard__body">
+              <div class="leaderboard__placeholder" data-leaderboard-placeholder>
+                Loading leaderboard…
+              </div>
+              <div class="table-wrapper" data-leaderboard-table-wrapper hidden>
+                <table class="leaderboard__table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Rank</th>
+                      <th scope="col">Player</th>
+                      <th scope="col">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody data-leaderboard-table-body></tbody>
+                </table>
+              </div>
+              <div class="leaderboard__cards" data-leaderboard-cards hidden></div>
+            </div>
+            <p class="status" data-leaderboard-status role="status" aria-live="polite"></p>
+          </article>
+
+          <article class="leaderboard" data-leaderboard="timer">
+            <header class="leaderboard__header">
+              <h3>Timer Leaderboard</h3>
+              <button type="button" class="btn btn--ghost" data-leaderboard-refresh>
+                Refresh
+              </button>
+            </header>
+            <div class="leaderboard__body">
+              <div class="leaderboard__placeholder" data-leaderboard-placeholder>
+                Loading leaderboard…
+              </div>
+              <div class="table-wrapper" data-leaderboard-table-wrapper hidden>
+                <table class="leaderboard__table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Rank</th>
+                      <th scope="col">Player</th>
+                      <th scope="col">Best accuracy</th>
+                    </tr>
+                  </thead>
+                  <tbody data-leaderboard-table-body></tbody>
+                </table>
+              </div>
+              <div class="leaderboard__cards" data-leaderboard-cards hidden></div>
+            </div>
+            <p class="status" data-leaderboard-status role="status" aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span data-year></span> Frontend Modules Playground. Built for rapid iteration.</p>
+    </footer>
+
+    <script type="module" src="./app.js"></script>
+main
   </body>
 </html>
