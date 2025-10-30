@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MemeForge — Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="./styles/profile.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel" data-presets="env,react">
+      const {
+        createContext,
+        useCallback,
+        useContext,
+        useEffect,
+        useMemo,
+        useState,
+      } = React;
+      const {
+        HashRouter,
+        Routes,
+        Route,
+        Navigate,
+        useLocation,
+        useNavigate,
+        useParams,
+      } = ReactRouterDOM;
+
+      const DEFAULT_TITLE = "MemeForge — Profile";
+      const AUTH_STORAGE_KEY = "memeforge.auth.user";
+
+      const defaultAuthUser = {
+        username: "memelord",
+        displayName: "Meme Lord",
+        bio: "Curating the dankest memes across the multiverse.",
+        avatarUrl: "https://api.dicebear.com/7.x/thumbs/svg?seed=memelord",
+      };
+
+      const AuthContext = createContext({ user: null, setUser: () => {} });
+
+      function AuthProvider({ children }) {
+        const [user, setUser] = useState(() => {
+          try {
+            const stored = window.localStorage.getItem(AUTH_STORAGE_KEY);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              if (parsed && typeof parsed === "object" && parsed.username) {
+                return parsed;
+              }
+            }
+          } catch (error) {
+            console.warn("Failed to restore auth user from storage", error);
+          }
+          return defaultAuthUser;
+        });
+
+        useEffect(() => {
+          try {
+            if (user && user.username) {
+              window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+            } else {
+              window.localStorage.removeItem(AUTH_STORAGE_KEY);
+            }
+          } catch (error) {
+            console.warn("Failed to persist auth user", error);
+          }
+        }, [user]);
+
+        const value = useMemo(() => ({ user, setUser }), [user]);
+        return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+      }
+
+      function useAuth() {
+        return useContext(AuthContext);
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return null;
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return null;
+        }
+        return date.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      function normalizeMeme(item, index) {
+        if (!item || typeof item !== "object") {
+          return {
+            id: index,
+            title: "Untitled meme",
+            imageUrl: null,
+            description: "",
+            approvedAt: null,
+          };
+        }
+
+        const imageUrl =
+          item.imageUrl ||
+          item.image_url ||
+          item.thumbnail ||
+          item.thumbnail_url ||
+          item.mediaUrl ||
+          item.url ||
+          null;
+
+        const approvedAt =
+          item.approvedAt || item.approved_at || item.publishedAt || item.published_at || null;
+
+        const description = item.description || item.caption || item.summary || "";
+
+        const title =
+          item.title ||
+          item.name ||
+          item.slug ||
+          item.id ||
+          (typeof index === "number" ? `Meme ${index + 1}` : "Untitled meme");
+
+        const id = item.id || item.slug || item.uuid || title || index;
+
+        return {
+          id,
+          title,
+          imageUrl,
+          description,
+          approvedAt,
+        };
+      }
+
+      function normalizeAchievement(item, index) {
+        if (!item || typeof item !== "object") {
+          return {
+            id: index,
+            name: "Achievement",
+            description: "",
+            icon: "",
+            awardedAt: null,
+          };
+        }
+
+        const name = item.name || item.title || item.label || `Achievement ${index + 1}`;
+        const description = item.description || item.summary || "";
+        const icon =
+          item.icon ||
+          item.iconUrl ||
+          item.icon_url ||
+          item.badgeUrl ||
+          item.badge_url ||
+          "";
+        const awardedAt = item.awardedAt || item.awarded_at || item.unlockedAt || item.unlocked_at || null;
+        const id = item.id || item.code || item.slug || name || index;
+
+        return {
+          id,
+          name,
+          description,
+          icon,
+          awardedAt,
+        };
+      }
+
+      function normalizeProfile(payload, fallbackUsername) {
+        const safePayload = payload && typeof payload === "object" ? payload : {};
+        const username = safePayload.username || safePayload.handle || fallbackUsername || "";
+        const displayName =
+          safePayload.displayName ||
+          safePayload.display_name ||
+          safePayload.name ||
+          username;
+
+        const rawScore =
+          safePayload.totalScore ??
+          safePayload.total_score ??
+          safePayload.score ??
+          safePayload.points ??
+          0;
+
+        let totalScore = 0;
+        if (typeof rawScore === "number" && Number.isFinite(rawScore)) {
+          totalScore = rawScore;
+        } else {
+          const parsed = parseFloat(rawScore);
+          totalScore = Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        const approvedMemesSource =
+          safePayload.approvedMemes ||
+          safePayload.approved_memes ||
+          safePayload.memes ||
+          safePayload.gallery ||
+          [];
+
+        const approvedMemes = Array.isArray(approvedMemesSource)
+          ? approvedMemesSource.map((item, index) => normalizeMeme(item, index))
+          : [];
+
+        const achievementsSource =
+          safePayload.achievements ||
+          safePayload.badges ||
+          safePayload.achievement_badges ||
+          [];
+
+        const achievements = Array.isArray(achievementsSource)
+          ? achievementsSource.map((item, index) => normalizeAchievement(item, index))
+          : [];
+
+        const avatarUrl =
+          safePayload.avatarUrl ||
+          safePayload.avatar_url ||
+          safePayload.profileImage ||
+          safePayload.profile_image ||
+          null;
+
+        const bio = safePayload.bio || safePayload.about || safePayload.description || "";
+
+        return {
+          username,
+          displayName,
+          totalScore,
+          approvedMemes,
+          achievements,
+          avatarUrl,
+          bio,
+        };
+      }
+
+      function useProfileData(username, reloadToken) {
+        const [state, setState] = useState(() => ({
+          status: username ? "loading" : "idle",
+          data: null,
+          error: null,
+        }));
+
+        useEffect(() => {
+          if (!username) {
+            setState({ status: "idle", data: null, error: null });
+            return () => {};
+          }
+
+          let isMounted = true;
+          const abortController = new AbortController();
+
+          setState((previous) => ({
+            status: "loading",
+            data: previous.data,
+            error: null,
+          }));
+
+          async function fetchProfile() {
+            try {
+              const response = await fetch(`/api/user/${encodeURIComponent(username)}`, {
+                signal: abortController.signal,
+                credentials: "include",
+                headers: {
+                  Accept: "application/json",
+                },
+              });
+
+              if (!response.ok) {
+                const errorText = await response.text();
+                const statusDescription = response.statusText ? ` ${response.statusText}` : "";
+                throw new Error(
+                  errorText || `Failed to load profile (status ${response.status}${statusDescription})`
+                );
+              }
+
+              const text = await response.text();
+              let payload = {};
+              if (text) {
+                try {
+                  payload = JSON.parse(text);
+                } catch (parseError) {
+                  throw new Error("Received invalid JSON while loading profile data.");
+                }
+              }
+
+              if (!isMounted) {
+                return;
+              }
+              setState({
+                status: "success",
+                data: normalizeProfile(payload, username),
+                error: null,
+              });
+            } catch (error) {
+              if (!isMounted) {
+                return;
+              }
+              if (error.name === "AbortError") {
+                return;
+              }
+              setState({ status: "error", data: null, error });
+            }
+          }
+
+          fetchProfile();
+
+          return () => {
+            isMounted = false;
+            abortController.abort();
+          };
+        }, [username, reloadToken]);
+
+        return state;
+      }
+
+      function useDecodedUsername(rawUsername) {
+        return useMemo(() => {
+          if (!rawUsername) {
+            return "";
+          }
+          try {
+            return decodeURIComponent(rawUsername);
+          } catch (error) {
+            return rawUsername;
+          }
+        }, [rawUsername]);
+      }
+
+      function useDocumentTitle(profile) {
+        useEffect(() => {
+          if (profile && profile.username) {
+            const label = profile.displayName || profile.username;
+            document.title = `${label} — MemeForge Profile`;
+            return () => {
+              document.title = DEFAULT_TITLE;
+            };
+          }
+          document.title = DEFAULT_TITLE;
+          return () => {
+            document.title = DEFAULT_TITLE;
+          };
+        }, [profile]);
+      }
+
+      function generateAvatar(username) {
+        if (!username) {
+          return null;
+        }
+        return `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(username)}`;
+      }
+
+      function ProfileHero({ profile, isOwnProfile }) {
+        const fallbackAvatar = useMemo(() => generateAvatar(profile.username), [profile.username]);
+        const [avatarSource, setAvatarSource] = useState(() => profile.avatarUrl || fallbackAvatar);
+
+        useEffect(() => {
+          setAvatarSource(profile.avatarUrl || fallbackAvatar);
+        }, [profile.avatarUrl, fallbackAvatar]);
+
+        const handleAvatarError = useCallback(() => {
+          if (profile.avatarUrl && avatarSource === profile.avatarUrl && fallbackAvatar && fallbackAvatar !== avatarSource) {
+            setAvatarSource(fallbackAvatar);
+            return;
+          }
+          setAvatarSource(null);
+        }, [avatarSource, fallbackAvatar, profile.avatarUrl]);
+
+        const title = profile.displayName || profile.username || "Profile";
+        const initial = title ? title.charAt(0).toUpperCase() : "?";
+        const totalScore = Number.isFinite(profile.totalScore) ? profile.totalScore : 0;
+
+        return (
+          <header className="profile-hero">
+            <div className="profile-hero__meta">
+              <div className="profile-avatar">
+                {avatarSource ? (
+                  <img
+                    src={avatarSource}
+                    alt={`${title} avatar`}
+                    onError={handleAvatarError}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="profile-avatar__fallback" aria-hidden="true">
+                    {initial}
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="profile-hint">{isOwnProfile ? "Your public profile" : "Community member"}</p>
+                <h1 className="profile-title">{title}</h1>
+                {profile.username ? <p className="profile-username">@{profile.username}</p> : null}
+                {profile.bio ? <p className="profile-bio">{profile.bio}</p> : null}
+              </div>
+            </div>
+            <div className="profile-score-card" aria-live="polite">
+              <span className="profile-score-card__label">Total Score</span>
+              <span className="profile-score-card__value">{totalScore.toLocaleString()}</span>
+            </div>
+          </header>
+        );
+      }
+
+      function ProfileSection({ title, description, children }) {
+        return (
+          <section className="profile-section">
+            <div className="profile-section__header">
+              <h2 className="profile-section__title">{title}</h2>
+              {description ? (
+                <p className="profile-section__description">{description}</p>
+              ) : null}
+            </div>
+            <div className="profile-section__body">{children}</div>
+          </section>
+        );
+      }
+
+      function MemeCard({ meme }) {
+        const [imageFailed, setImageFailed] = useState(false);
+        const approvedDate = formatDate(meme.approvedAt);
+        const showImage = Boolean(meme.imageUrl && !imageFailed);
+
+        return (
+          <article className="meme-card">
+            <div className="meme-card__media">
+              {showImage ? (
+                <img
+                  src={meme.imageUrl}
+                  alt={meme.title || "Approved meme"}
+                  onError={() => setImageFailed(true)}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="meme-card__placeholder" aria-hidden="true">
+                  No preview
+                </div>
+              )}
+            </div>
+            <div className="meme-card__content">
+              <h3 className="meme-card__title">{meme.title || "Untitled meme"}</h3>
+              {meme.description ? (
+                <p className="meme-card__description">{meme.description}</p>
+              ) : null}
+              {approvedDate ? (
+                <p className="meme-card__meta">Approved {approvedDate}</p>
+              ) : null}
+            </div>
+          </article>
+        );
+      }
+
+      function ApprovedMemesGallery({ memes }) {
+        if (!memes || memes.length === 0) {
+          return (
+            <div className="empty-state">
+              <p>No approved memes yet. Keep creating and check back soon!</p>
+            </div>
+          );
+        }
+        return (
+          <div className="gallery-grid">
+            {memes.map((meme) => (
+              <MemeCard key={meme.id} meme={meme} />
+            ))}
+          </div>
+        );
+      }
+
+      function AchievementBadge({ achievement }) {
+        const [iconFailed, setIconFailed] = useState(false);
+        const unlockDate = formatDate(achievement.awardedAt);
+        const initial = achievement.name ? achievement.name.charAt(0).toUpperCase() : "★";
+        const showIcon = Boolean(achievement.icon && !iconFailed);
+
+        return (
+          <div className="achievement-card">
+            <div className="achievement-badge__icon">
+              {showIcon ? (
+                <img
+                  src={achievement.icon}
+                  alt=""
+                  role="presentation"
+                  onError={() => setIconFailed(true)}
+                />
+              ) : (
+                <span aria-hidden="true">{initial}</span>
+              )}
+            </div>
+            <div className="achievement-badge__body">
+              <span className="achievement-badge__name">{achievement.name}</span>
+              {achievement.description ? (
+                <p className="achievement-badge__description">{achievement.description}</p>
+              ) : null}
+              {unlockDate ? (
+                <span className="achievement-badge__meta">Unlocked {unlockDate}</span>
+              ) : null}
+            </div>
+          </div>
+        );
+      }
+
+      function AchievementsGrid({ achievements }) {
+        if (!achievements || achievements.length === 0) {
+          return (
+            <div className="empty-state">
+              <p>No achievements yet. Participate to start collecting badges!</p>
+            </div>
+          );
+        }
+        return (
+          <ul className="achievements-grid">
+            {achievements.map((achievement) => (
+              <li key={achievement.id}>
+                <AchievementBadge achievement={achievement} />
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      function ProfileSearch() {
+        const navigate = useNavigate();
+        const location = useLocation();
+        const [value, setValue] = useState("");
+
+        useEffect(() => {
+          const segments = location.pathname.split("/").filter(Boolean);
+          if (segments[0] === "profile" && segments[1]) {
+            try {
+              setValue(decodeURIComponent(segments[1]));
+            } catch (error) {
+              setValue(segments[1]);
+            }
+          } else {
+            setValue("");
+          }
+        }, [location]);
+
+        const handleSubmit = useCallback(
+          (event) => {
+            event.preventDefault();
+            const trimmed = value.trim();
+            if (!trimmed) {
+              return;
+            }
+            navigate(`/profile/${encodeURIComponent(trimmed)}`);
+          },
+          [navigate, value]
+        );
+
+        return (
+          <form className="profile-search" onSubmit={handleSubmit}>
+            <input
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              placeholder="Search username"
+              aria-label="Search by username"
+            />
+            <button className="button" type="submit">
+              View profile
+            </button>
+          </form>
+        );
+      }
+
+      function AppHeader() {
+        const { user } = useAuth();
+        const navigate = useNavigate();
+
+        return (
+          <header className="app-header">
+            <a className="brand" href="#/profile">
+              <span className="brand__glow" aria-hidden="true"></span>
+              MemeForge Profiles
+            </a>
+            <ProfileSearch />
+            {user && user.username ? (
+              <button
+                type="button"
+                className="button button--ghost"
+                onClick={() => navigate("/profile")}
+              >
+                View my profile
+              </button>
+            ) : null}
+          </header>
+        );
+      }
+
+      function RefreshNotice() {
+        return (
+          <div className="empty-state" role="status" aria-live="polite">
+            <p>Refreshing profile — hold tight!</p>
+          </div>
+        );
+      }
+
+      function ProfileRoute() {
+        const params = useParams();
+        const rawUsername = params.username || "";
+        const username = useDecodedUsername(rawUsername);
+        const { user } = useAuth();
+        const [reloadToken, setReloadToken] = useState(0);
+
+        const effectiveUsername = username || (user && user.username) || "";
+        const profileState = useProfileData(effectiveUsername, reloadToken);
+        const { status, data, error } = profileState;
+        const isOwnProfile = Boolean(user && data && user.username === data.username);
+
+        useDocumentTitle(data);
+
+        if (!effectiveUsername) {
+          return (
+            <div className="profile-empty-auth">
+              <h2>Sign in to view profiles</h2>
+              <p>
+                We couldn't determine your account. Please log in so we can show your stats and unlocked
+                achievements.
+              </p>
+            </div>
+          );
+        }
+
+        if (status === "loading" && !data) {
+          return (
+            <div className="loading-state" role="status" aria-live="polite">
+              <div className="spinner" aria-hidden="true"></div>
+              <p>
+                Loading profile for <strong>{effectiveUsername}</strong>...
+              </p>
+            </div>
+          );
+        }
+
+        if (status === "error") {
+          const message =
+            error && typeof error.message === "string"
+              ? error.message
+              : "Something went wrong while fetching the profile.";
+          return (
+            <div className="error-state" role="alert">
+              <h2>We couldn't load that profile.</h2>
+              <p>{message}</p>
+              <button
+                className="button"
+                type="button"
+                onClick={() => setReloadToken((value) => value + 1)}
+              >
+                Try again
+              </button>
+            </div>
+          );
+        }
+
+        if (!data) {
+          return (
+            <div className="empty-state">
+              <p>No profile data available for {effectiveUsername}.</p>
+            </div>
+          );
+        }
+
+        return (
+          <article className="profile-page">
+            {status === "loading" && data ? <RefreshNotice /> : null}
+            <ProfileHero profile={data} isOwnProfile={isOwnProfile} />
+            <ProfileSection
+              title="Approved Memes"
+              description="Featured memes that cleared moderation and delighted the community."
+            >
+              <ApprovedMemesGallery memes={data.approvedMemes} />
+            </ProfileSection>
+            <ProfileSection
+              title="Achievements"
+              description="Badges you've earned by contributing, reacting, and keeping the meme magic alive."
+            >
+              <AchievementsGrid achievements={data.achievements} />
+            </ProfileSection>
+          </article>
+        );
+      }
+
+      function NotFound() {
+        return (
+          <div className="empty-state">
+            <p>We couldn't find that page. Try searching for a profile above.</p>
+          </div>
+        );
+      }
+
+      function App() {
+        return (
+          <AuthProvider>
+            <HashRouter>
+              <div className="app-shell">
+                <AppHeader />
+                <main id="main" className="content">
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/profile" replace />} />
+                    <Route path="/profile" element={<ProfileRoute />} />
+                    <Route path="/profile/:username" element={<ProfileRoute />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+              </div>
+            </HashRouter>
+          </AuthProvider>
+        );
+      }
+
+      const rootElement = document.getElementById("root");
+      if (rootElement) {
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+      }
+    </script>
+  </body>
+</html>
