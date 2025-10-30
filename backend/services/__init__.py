@@ -1,5 +1,7 @@
 """Service layer for backend utilities."""
 
+from __future__ import annotations
+
 from .auth import (
     app as auth_app,
     get_session_manager,
@@ -9,6 +11,7 @@ from .auth import (
     reset_auth_state,
     session_manager,
     user_repository,
+)
 from .excuse_api import ExcuseAPI, create_excuse_app
 from .excuses import (
     DEFAULT_FIXTURE_PATH,
@@ -16,10 +19,14 @@ from .excuses import (
     ExcuseSeedError,
     ExcuseService,
     get_excuse_service,
+    load_excuse_fixture,
+)
 from .leaderboard import (
     GamificationService,
     RateLimitInfo,
+    RedisRateLimitClient,
     RedisRateLimiter,
+    RedisSortedSetClient,
     TimerLeaderboardAPI,
     TimerLeaderboardService,
     TimerRateLimitExceeded,
@@ -30,6 +37,20 @@ from .leaderboard import (
     TimerTokenError,
     TimerTokenSigner,
     TimerValidationError,
+)
+from .memes import (
+    MemeCreator,
+    MemeRecord,
+    MemesFilter,
+    MemesQueryParams,
+    MemesService,
+    PaginatedMemes,
+    Pagination,
+    RandomMemeCache,
+    SQLAlchemyMemesRepository,
+    create_memes_app,
+    get_memes_service,
+    InMemoryMemesRepository,
 )
 from .storage import (
     LocalStorageService,
@@ -47,9 +68,12 @@ __all__ = [
     "DEFAULT_FIXTURE_PATH",
     "create_excuse_app",
     "get_excuse_service",
+    "load_excuse_fixture",
     "GamificationService",
     "RateLimitInfo",
+    "RedisRateLimitClient",
     "RedisRateLimiter",
+    "RedisSortedSetClient",
     "TimerLeaderboardAPI",
     "TimerLeaderboardService",
     "TimerRateLimitExceeded",
@@ -60,6 +84,18 @@ __all__ = [
     "TimerTokenError",
     "TimerTokenSigner",
     "TimerValidationError",
+    "MemesService",
+    "MemesFilter",
+    "MemesQueryParams",
+    "MemeRecord",
+    "MemeCreator",
+    "RandomMemeCache",
+    "PaginatedMemes",
+    "Pagination",
+    "InMemoryMemesRepository",
+    "SQLAlchemyMemesRepository",
+    "create_memes_app",
+    "get_memes_service",
     "StorageConfig",
     "StorageService",
     "LocalStorageService",

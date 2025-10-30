@@ -1,11 +1,32 @@
 """Backend package for application services."""
 
+from __future__ import annotations
+
 from .services import (
+    DEFAULT_FIXTURE_PATH,
+    ExcuseAPI,
+    ExcuseSeedConfig,
+    ExcuseSeedError,
+    ExcuseService,
+    InMemoryMemesRepository,
     LocalStorageService,
+    MemeCreator,
+    MemeRecord,
+    MemesFilter,
+    MemesQueryParams,
+    MemesService,
+    PaginatedMemes,
+    Pagination,
+    RandomMemeCache,
+    SQLAlchemyMemesRepository,
     S3StorageService,
     StorageConfig,
     StorageService,
     auth_app,
+    create_excuse_app,
+    create_memes_app,
+    get_excuse_service,
+    get_memes_service,
     get_session_manager,
     get_storage_service,
     get_user_repository,
@@ -14,20 +35,6 @@ from .services import (
     reset_auth_state,
     session_manager,
     user_repository,
-from .services.excuse_api import ExcuseAPI, create_excuse_app
-from .services.excuses import (
-    DEFAULT_FIXTURE_PATH,
-    ExcuseSeedConfig,
-    ExcuseSeedError,
-    ExcuseService,
-    get_excuse_service,
-)
-from .services.storage import (
-    StorageConfig,
-    StorageService,
-    LocalStorageService,
-    S3StorageService,
-    get_storage_service,
 )
 
 __all__ = [
@@ -38,10 +45,23 @@ __all__ = [
     "DEFAULT_FIXTURE_PATH",
     "create_excuse_app",
     "get_excuse_service",
+    "MemesService",
+    "MemesFilter",
+    "MemesQueryParams",
+    "MemeRecord",
+    "MemeCreator",
+    "RandomMemeCache",
+    "PaginatedMemes",
+    "Pagination",
+    "InMemoryMemesRepository",
+    "SQLAlchemyMemesRepository",
+    "create_memes_app",
+    "get_memes_service",
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
     "S3StorageService",
+    "get_storage_service",
     "auth_app",
     "user_repository",
     "session_manager",
@@ -50,5 +70,4 @@ __all__ = [
     "reset_auth_state",
     "require_authenticated_user",
     "require_admin_user",
-    "get_storage_service",
 ]
