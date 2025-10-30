@@ -1,25 +1,6 @@
 """Service layer for backend utilities."""
 
-feat-leaderboards-api-score-timer-redis-hydrate
-from .leaderboard import (
-    LeaderboardAPI,
-    LeaderboardEntry,
-    LeaderboardService,
-    UserProfile,
-    create_leaderboard_api,
-
-feature-gamification-service-redis-leaderboard-achievements
-from .gamification import (
-    Achievement,
-
 from __future__ import annotations
-
-from .gamification import (
- main
-    GamificationConfig,
-    GamificationEventResult,
-    GamificationService,
-    get_gamification_service,
 
 from .auth import (
     app as auth_app,
@@ -40,8 +21,18 @@ from .excuses import (
     get_excuse_service,
     load_excuse_fixture,
 )
+from .gamification import (
+    Achievement,
+    GamificationConfig,
+    GamificationEventResult,
+    GamificationService,
+    get_gamification_service,
+)
 from .leaderboard import (
     GamificationService,
+    LeaderboardAPI,
+    LeaderboardEntry,
+    LeaderboardService,
     RateLimitInfo,
     RedisRateLimitClient,
     RedisRateLimiter,
@@ -56,6 +47,8 @@ from .leaderboard import (
     TimerTokenError,
     TimerTokenSigner,
     TimerValidationError,
+    UserProfile,
+    create_leaderboard_api,
 )
 from .memes import (
     MemeCreator,
@@ -67,11 +60,9 @@ from .memes import (
     Pagination,
     RandomMemeCache,
     SQLAlchemyMemesRepository,
+    InMemoryMemesRepository,
     create_memes_app,
     get_memes_service,
-    InMemoryMemesRepository,
-main
-main
 )
 from .storage import (
     LocalStorageService,
@@ -82,23 +73,14 @@ from .storage import (
 )
 
 __all__ = [
- feat-leaderboards-api-score-timer-redis-hydrate
-    "LeaderboardAPI",
-    "LeaderboardEntry",
-    "LeaderboardService",
-    "UserProfile",
-    "create_leaderboard_api",
-
-feature-gamification-service-redis-leaderboard-achievements
-    "Achievement",
-    "GamificationConfig",
-    "GamificationEventResult",
-    "GamificationService",
-    "get_gamification_service",
-
-    "GamificationConfig",
-    "GamificationEventResult",
-    "GamificationService",
+    "auth_app",
+    "user_repository",
+    "session_manager",
+    "get_user_repository",
+    "get_session_manager",
+    "reset_auth_state",
+    "require_authenticated_user",
+    "require_admin_user",
     "ExcuseAPI",
     "ExcuseSeedConfig",
     "ExcuseSeedError",
@@ -107,7 +89,16 @@ feature-gamification-service-redis-leaderboard-achievements
     "create_excuse_app",
     "get_excuse_service",
     "load_excuse_fixture",
+    "Achievement",
+    "GamificationConfig",
+    "GamificationEventResult",
     "GamificationService",
+    "get_gamification_service",
+    "LeaderboardAPI",
+    "LeaderboardEntry",
+    "LeaderboardService",
+    "UserProfile",
+    "create_leaderboard_api",
     "RateLimitInfo",
     "RedisRateLimitClient",
     "RedisRateLimiter",
@@ -134,22 +125,9 @@ feature-gamification-service-redis-leaderboard-achievements
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
-main
-main
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
     "S3StorageService",
-    "StorageConfig",
-    "StorageService",
-    "get_gamification_service",
     "get_storage_service",
-    "auth_app",
-    "user_repository",
-    "session_manager",
-    "get_user_repository",
-    "get_session_manager",
-    "reset_auth_state",
-    "require_authenticated_user",
-    "require_admin_user",
 ]

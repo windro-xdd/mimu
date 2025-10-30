@@ -1,9 +1,11 @@
-"""Content blueprint placeholder."""
+"""Content blueprint for content-related routes."""
 
 from __future__ import annotations
 
 from flask import Blueprint
 
-bp = Blueprint("content", __name__, url_prefix="/content")
+from backend.routes.content import content_bp
+
+bp = content_bp
 
 __all__ = ["bp"]

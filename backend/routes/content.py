@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from backend.auth import require_auth
-from backend.db.models import Content, Vote
+from backend.models import Content, Vote
 from backend.services.gamification import GamificationEventResult
 
 content_bp = Blueprint("content", __name__)
