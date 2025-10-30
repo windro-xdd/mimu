@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>mimu — Minimal Landing Page</title>
+    <meta
+      name="description"
+      content="mimu is a calm, human-centered landing page designed with simplicity and clarity in mind."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header" id="home">
+      <div class="container">
+        <div class="branding">mimu</div>
+        <nav class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section id="hero" class="hero" aria-labelledby="hero-title">
+        <div class="container">
+          <div class="hero-content">
+            <h1 id="hero-title">Modern simplicity for mindful experiences</h1>
+            <p>
+              mimu helps teams craft calm, focused digital spaces that put people first,
+              offering just the right tools to tell meaningful stories.
+            </p>
+            <a class="button button-primary" href="#contact">Let's connect</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="about" aria-labelledby="about-title">
+        <div class="container">
+          <h2 id="about-title">About mimu</h2>
+          <p>
+            We believe that less is more. mimu provides thoughtful guidance, curated design
+            systems, and mindful collaboration practices so your team can focus on what
+            matters most: creating experiences that resonate.
+          </p>
+          <ul class="feature-list">
+            <li>
+              <h3>Guided Strategy</h3>
+              <p>Plan purposeful journeys that keep your audience engaged from the first click.</p>
+            </li>
+            <li>
+              <h3>Intentional Design</h3>
+              <p>Shape interfaces that are intuitive, inclusive, and beautifully minimal.</p>
+            </li>
+            <li>
+              <h3>Collaborative Flow</h3>
+              <p>Unlock seamless teamwork with clear workflows and supportive rhythms.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="contact" class="contact" aria-labelledby="contact-title">
+        <div class="container">
+          <h2 id="contact-title">Contact</h2>
+          <p>We'd love to hear from you. Share a few details and we'll get in touch soon.</p>
+          <form action="#" method="post" aria-describedby="contact-note">
+            <div class="form-field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="form-field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="button button-secondary" disabled aria-disabled="true">
+              Send message
+            </button>
+            <p id="contact-note" class="form-note">Demo only. Submissions are currently disabled.</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>&copy; <span id="current-year">2024</span> mimu. All rights reserved.</small>
+        <nav class="footer-nav" aria-label="Footer">
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#home">Back to top</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
