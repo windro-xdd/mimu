@@ -1,5 +1,12 @@
 """Service layer for backend utilities."""
 
+from .leaderboard import (
+    LeaderboardAPI,
+    LeaderboardEntry,
+    LeaderboardService,
+    UserProfile,
+    create_leaderboard_api,
+)
 from .storage import (
     StorageConfig,
     StorageService,
@@ -9,6 +16,11 @@ from .storage import (
 )
 
 __all__ = [
+    "LeaderboardAPI",
+    "LeaderboardEntry",
+    "LeaderboardService",
+    "UserProfile",
+    "create_leaderboard_api",
     "StorageConfig",
     "StorageService",
     "LocalStorageService",
