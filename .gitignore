@@ -9,3 +9,11 @@ Thumbs.db
 *.tmp
 *.swp
 *.swo
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Uploaded media
+backend/uploads/
