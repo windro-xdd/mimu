@@ -1,3 +1,20 @@
+feat/backend-flask-scaffold-app-factory-config-blueprints-extensions
+"""Backend package root exports."""
+
+from __future__ import annotations
+
+from .app import create_app
+from .app.config import (
+    BaseConfig,
+    DevelopmentConfig,
+    ProductionConfig,
+    get_config,
+    load_environment,
+)
+from .services.storage import (
+    LocalStorageService,
+    S3StorageService,
+
 """Backend package exposing public APIs."""
 
 feat-leaderboards-api-score-timer-redis-hydrate
@@ -39,6 +56,7 @@ from .services import (
     RandomMemeCache,
     SQLAlchemyMemesRepository,
     S3StorageService,
+main 
 main
     StorageConfig,
     StorageService,
@@ -49,6 +67,17 @@ main
     get_memes_service,
     get_session_manager,
     get_storage_service,
+feat/backend-flask-scaffold-app-factory-config-blueprints-extensions
+)
+
+__all__ = [
+    "create_app",
+    "BaseConfig",
+    "DevelopmentConfig",
+    "ProductionConfig",
+    "get_config",
+    "load_environment",
+
     get_user_repository,
     require_admin_user,
     require_authenticated_user,
@@ -64,7 +93,7 @@ feat-leaderboards-api-score-timer-redis-hydrate
     "LeaderboardService",
     "UserProfile",
     "create_leaderboard_api",
-=======
+
 feature-gamification-service-redis-leaderboard-achievements
     "Achievement",
     "GamificationConfig",
@@ -90,6 +119,7 @@ feature-gamification-service-redis-leaderboard-achievements
     "SQLAlchemyMemesRepository",
     "create_memes_app",
     "get_memes_service",
+main
 main
 main
     "StorageConfig",
